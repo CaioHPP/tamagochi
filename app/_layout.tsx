@@ -7,6 +7,8 @@ import { useColorScheme } from '@/hooks/useColorScheme';
 
 import { router, Stack } from 'expo-router';
 import { ThemeProvider } from '@react-navigation/native';
+import { SQLiteProvider } from 'expo-sqlite';
+import { initDatabase } from './database/initDatabase';
 
 
 
@@ -29,12 +31,12 @@ export default function RootLayout() {
   }
 
   return (
-   
+  <SQLiteProvider databaseName='tamagotchi.db' onInit={initDatabase}>
       <Stack>
         <Stack.Screen name='index' options={{ headerShown: false }} />
         <Stack.Screen name='Tamagotchi' />
         <Stack.Screen name='TamagotchiAdd' options={{ title: 'Adicionar Tamagotchi' }} />
       </Stack>
-   
+   </SQLiteProvider>
       );
 }

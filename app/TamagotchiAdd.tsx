@@ -1,17 +1,36 @@
 import { Image, TouchableOpacity, StyleSheet, Text, TextInput, View } from "react-native";
 import TamagotchiList from ".";
 import { router } from "expo-router";
+import { useTamagotchiDatabase } from "./database/tamagotchiService";
+import { useState } from "react";
 
 const TamagotchiAdd = () => {
+    
+    const [name, setName] = useState<string>('');
+    const { createTamagotchi } = useTamagotchiDatabase();
+
+
+    const create = async () => {
+        try {
+            const res = await createTamagotchi(name);
+            
+        }
+        catch (error) {
+            console.error(error);
+        }
+    }
+
+
+
     const salvar = () => {
-        console.log('Salvando...');
+        create();
         router.back();
     }
 
     return (
         <View style={styles.container}>
             <Image style={styles.image} source={require('../assets/images/tamagotchi.png')} />
-            <TextInput style={styles.input} placeholder="Digite o nome do Tamagotchi" />
+            <TextInput style={styles.input} placeholder="Digite o nome do Tamagotchi" onChangeText={setName} value={name} />
             <TouchableOpacity style={styles.button} onPress={() => salvar()}>
                 <Text style={styles.buttonText}>Salvar</Text>
             </TouchableOpacity>
@@ -42,6 +61,9 @@ const styles = StyleSheet.create({
         padding: 5,
         fontSize: 20,
         textAlign: 'center',
+        fontStyle: "normal",
+        fontWeight: "bold",
+        lineHeight: 24,
     },
     button: {
         padding:5,
