@@ -10,25 +10,18 @@ import TamagotchiList from ".";
 import { router } from "expo-router";
 import { useTamagotchiDatabase } from "./database/tamagotchiService";
 import { useState } from "react";
-
-const imageMap: { [key: number]: any } = {
-  1: require("../assets/images/1.png"),
-  2: require("../assets/images/2.png"),
-  3: require("../assets/images/3.png"),
-  4: require("../assets/images/4.png"),
-  5: require("../assets/images/5.png"),
-};
+import imageMap from "@/constants/ImageMap";
 
 const TamagotchiAdd = () => {
   const [name, setName] = useState<string>("");
   const { createTamagotchi } = useTamagotchiDatabase();
-  const [selectedImage, setSelectedImage] = useState<number | null>(null);
+  const [selectedImage, setSelectedImage] = useState<number>(1);
 
   const images = [1, 2, 3, 4, 5];
 
   const create = async () => {
     try {
-      const image = String(selectedImage);
+      const image = selectedImage;
       const res = await createTamagotchi(name, image);
     } catch (error) {
       console.error(error);

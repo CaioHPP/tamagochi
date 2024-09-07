@@ -1,5 +1,6 @@
 import { router } from "expo-router";
 import { Image, TouchableOpacity, StyleSheet, Text, View } from "react-native";
+import imageMap from "@/constants/ImageMap";
 
 type StatusProps = {
   title: string;
@@ -14,7 +15,7 @@ type TamagotchiProps = {
   fome: number;
   sono: number;
   diversao: number;
-  image: string;
+  image: number;
 };
 
 export function Status({ title, value, color, width }: StatusProps) {
@@ -54,21 +55,18 @@ const ListedTamagotchi = ({
   diversao,
   image,
 }: TamagotchiProps) => {
-  const imagePath = require(`../assets/images/${image}.png`);
-  console.log(imagePath);
-
   return (
     <TouchableOpacity
       onPress={() =>
         router.push({
           pathname: "/Tamagotchi",
-          params: { id, name, fome, sono, diversao, image },
+          params: { id },
         })
       }
     >
       <View style={styles.container}>
         <View style={styles.imageContainer}>
-          <Image style={styles.image} source={imagePath} />
+          <Image style={styles.image} source={imageMap[image]} />
         </View>
         <View style={styles.infoContainer}>
           <Text style={styles.title}>{name}</Text>
