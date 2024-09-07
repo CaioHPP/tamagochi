@@ -7,7 +7,7 @@ export async function initDatabase(database: SQLiteDatabase) {
         fome INTEGER NOT NULL DEFAULT 70,
         sono INTEGER NOT NULL DEFAULT 70,
         diversao INTEGER NOT NULL DEFAULT 70,
-        image TEXT NOT NULL DEFAULT 'tamagotchi.png',
+        image TEXT NOT NULL DEFAULT '1',
         last_interaction TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
     )`);
 

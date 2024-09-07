@@ -11,7 +11,7 @@ import { router } from "expo-router";
 import { useTamagotchiDatabase } from "./database/tamagotchiService";
 import { useState } from "react";
 
-const imageMap = {
+const imageMap: { [key: number]: any } = {
   1: require("../assets/images/1.png"),
   2: require("../assets/images/2.png"),
   3: require("../assets/images/3.png"),
@@ -28,7 +28,8 @@ const TamagotchiAdd = () => {
 
   const create = async () => {
     try {
-      const res = await createTamagotchi(name);
+      const image = String(selectedImage);
+      const res = await createTamagotchi(name, image);
     } catch (error) {
       console.error(error);
     }

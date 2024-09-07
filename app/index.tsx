@@ -24,6 +24,7 @@ const TamagotchiList = () => {
     try {
       const res = await getTamagotchis();
       setTamagotchis(res as Tamagotchi[]);
+      console.log(res);
     } catch (error) {
       console.error(error);
     }

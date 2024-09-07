@@ -54,6 +54,9 @@ const ListedTamagotchi = ({
   diversao,
   image,
 }: TamagotchiProps) => {
+  const imagePath = require(`../assets/images/${image}.png`);
+  console.log(imagePath);
+
   return (
     <TouchableOpacity
       onPress={() =>
@@ -65,10 +68,7 @@ const ListedTamagotchi = ({
     >
       <View style={styles.container}>
         <View style={styles.imageContainer}>
-          <Image
-            style={styles.image}
-            source={require("../assets/images/tamagotchi.png")}
-          />
+          <Image style={styles.image} source={imagePath} />
         </View>
         <View style={styles.infoContainer}>
           <Text style={styles.title}>{name}</Text>

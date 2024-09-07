@@ -3,10 +3,11 @@ import { useSQLiteContext } from "expo-sqlite";
 export function useTamagotchiDatabase() {
     const database = useSQLiteContext();
 
-    async function createTamagotchi(name: string) {
-        const query = await database.prepareAsync(`INSERT INTO tamagotchi (name) VALUES ($name)`);
+    async function createTamagotchi(name: string, image: string) {
+    
+        const query = await database.prepareAsync(`INSERT INTO tamagotchi (name, image) VALUES ($name, $image)`);
         try{   
-            const res = await query.executeAsync(name);
+            const res = await query.executeAsync({$name: name, $image: image});
         } catch (error) {
             throw error;
         }
