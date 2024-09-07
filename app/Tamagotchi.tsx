@@ -4,6 +4,7 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import imageMap from "@/constants/ImageMap";
 import { useCallback, useEffect, useState } from "react";
 import { useTamagotchiDatabase } from "./database/tamagotchiService";
+import { statusMap } from "@/constants/Status";
 
 type TamagotchiDetailProps = {
   id: number;
@@ -29,14 +30,16 @@ const TamagotchiDetail = ({ id }: TamagotchiDetailProps) => {
       const tamagotchi: any = await getTamagotchi(Number(params.id));
 
       setName(tamagotchi[0].name);
-      setFome(tamagotchi[0].fome);
-      setSono(tamagotchi[0].sono);
-      setDiversao(tamagotchi[0].diversao);
+      setFome(tamagotchi[0].fome < 0 ? 0 : tamagotchi[0].fome);
+      setSono(tamagotchi[0].sono < 0 ? 0 : tamagotchi[0].sono);
+      setDiversao(tamagotchi[0].diversao < 0 ? 0 : tamagotchi[0].diversao);
       setImage(tamagotchi[0].image);
     } catch (error) {
       console.error(error);
     }
   };
+
+  let status = statusMap(fome, sono, diversao);
 
   useFocusEffect(
     useCallback(() => {
@@ -44,7 +47,6 @@ const TamagotchiDetail = ({ id }: TamagotchiDetailProps) => {
       return () => {};
     }, [])
   );
-
   return (
     <View style={styles.container}>
       <Stack.Screen options={{ title: params.name as string }} />
@@ -55,7 +57,7 @@ const TamagotchiDetail = ({ id }: TamagotchiDetailProps) => {
         <Status title="Sono" value={sono} color="#9DE8FF" />
         <Status title="Diversão" value={diversao} color="#FEACAC" />
       </View>
-      <Status title="Total" value={fome + sono + diversao} width={200} />
+      <Status title="Status" value={status} width={200} />
     </View>
   );
 };

@@ -1,10 +1,12 @@
 import { router } from "expo-router";
 import { Image, TouchableOpacity, StyleSheet, Text, View } from "react-native";
 import imageMap from "@/constants/ImageMap";
+import { useEffect } from "react";
+import { statusMap } from "@/constants/Status";
 
 type StatusProps = {
   title: string;
-  value: number;
+  value: number | string;
   color?: string;
   width?: number;
 };
@@ -55,6 +57,11 @@ const ListedTamagotchi = ({
   diversao,
   image,
 }: TamagotchiProps) => {
+  if (fome < 0) fome = 0;
+  if (sono < 0) sono = 0;
+  if (diversao < 0) diversao = 0;
+  let status = statusMap(fome, sono, diversao);
+
   return (
     <TouchableOpacity
       onPress={() =>
@@ -74,7 +81,7 @@ const ListedTamagotchi = ({
             <Status title="Fome" value={fome} />
             <Status title="Sono" value={sono} />
             <Status title="Diversão" value={diversao} />
-            <Status title="Total" value={fome + sono + diversao} />
+            <Status title="Status" value={status} />
           </View>
         </View>
       </View>
@@ -113,6 +120,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginTop: 10,
     gap: 10,
+  },
+  dead: {
+    color: "red",
+    opacity: 0.5,
   },
 });
 export default ListedTamagotchi;

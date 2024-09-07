@@ -4,8 +4,7 @@ import { Link, router, useFocusEffect } from "expo-router";
 import { ScrollView, VirtualizedList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTamagotchiDatabase } from "./database/tamagotchiService";
-import { useCallback, useEffect, useState } from "react";
-
+import { SetStateAction, useCallback, useEffect, useState } from "react";
 type Tamagotchi = {
   id: number;
   name: string;
@@ -25,7 +24,6 @@ const TamagotchiList = () => {
     try {
       const res = await getTamagotchis();
       setTamagotchis(res as Tamagotchi[]);
-      console.log(res);
     } catch (error) {
       console.error(error);
     }
@@ -33,27 +31,16 @@ const TamagotchiList = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      tamagotchis.forEach(async (tamagotchi) => {
-        const newFome = tamagotchi.fome - 1;
-        const newSono = tamagotchi.sono - 1;
-        const newDiversao = tamagotchi.diversao - 1;
-
-        await updateTamagotchiAutoDecrease({
-          fome: newFome,
-          sono: newSono,
-          diversao: newDiversao,
-          id: tamagotchi.id,
-        });
-      });
-
       tamagotchisList();
-    }, 3600000);
-  });
+    }, 10000);
+    return () => clearInterval(interval);
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
       tamagotchisList();
-      return () => {};
+
+      return async () => {};
     }, [])
   );
 
@@ -69,27 +56,27 @@ const TamagotchiList = () => {
 
   return (
     <SafeAreaView>
-      <ScrollView>
-        <Header text="+" onPress={() => router.navigate("/TamagotchiAdd")} />
-        <VirtualizedList
-          data={tamagotchis}
-          initialNumToRender={4}
-          renderItem={({ item }: any) => (
-            <ListedTamagotchi
-              id={item.id}
-              key={item.id}
-              name={item.name}
-              fome={item.fome}
-              sono={item.sono}
-              diversao={item.diversao}
-              image={item.image}
-            />
-          )}
-          keyExtractor={(item: any) => item.id}
-          getItemCount={() => tamagotchis.length}
-          getItem={(data, index) => data[index]}
-        ></VirtualizedList>
-      </ScrollView>
+      <VirtualizedList
+        ListHeaderComponent={() => (
+          <Header text="+" onPress={() => router.push("/TamagotchiAdd")} />
+        )}
+        data={tamagotchis}
+        initialNumToRender={4}
+        renderItem={({ item }: any) => (
+          <ListedTamagotchi
+            id={item.id}
+            key={item.id}
+            name={item.name}
+            fome={item.fome}
+            sono={item.sono}
+            diversao={item.diversao}
+            image={item.image}
+          />
+        )}
+        keyExtractor={(item: any) => item.id}
+        getItemCount={() => tamagotchis.length}
+        getItem={(data, index) => data[index]}
+      ></VirtualizedList>
     </SafeAreaView>
   );
 };
