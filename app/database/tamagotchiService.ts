@@ -52,7 +52,6 @@ export function useTamagotchiDatabase() {
         query.finalizeAsync();
       }
     });
-    console.log("Busquei");
     return await database.getAllAsync(`SELECT * FROM tamagotchi`);
   }
 
