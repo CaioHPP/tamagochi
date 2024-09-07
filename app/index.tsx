@@ -17,17 +17,38 @@ type Tamagotchi = {
 };
 
 const TamagotchiList = () => {
-  const { getTamagotchis } = useTamagotchiDatabase();
+  const { getTamagotchis, updateTamagotchiAutoDecrease } =
+    useTamagotchiDatabase();
   const [tamagotchis, setTamagotchis] = useState<Tamagotchi[]>([]);
 
   const tamagotchisList = async () => {
     try {
       const res = await getTamagotchis();
       setTamagotchis(res as Tamagotchi[]);
+      console.log(res);
     } catch (error) {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      tamagotchis.forEach(async (tamagotchi) => {
+        const newFome = tamagotchi.fome - 1;
+        const newSono = tamagotchi.sono - 1;
+        const newDiversao = tamagotchi.diversao - 1;
+
+        await updateTamagotchiAutoDecrease({
+          fome: newFome,
+          sono: newSono,
+          diversao: newDiversao,
+          id: tamagotchi.id,
+        });
+      });
+
+      tamagotchisList();
+    }, 3600000);
+  });
 
   useFocusEffect(
     useCallback(() => {
