@@ -17,7 +17,7 @@ export function useTamagotchiDatabase() {
 
     async function getTamagotchis() {
         try{
-           return await database.getAllAsync<any>(`SELECT id,name,fome,sono,diversao FROM tamagotchi`);
+           return await database.getAllAsync(`SELECT * FROM tamagotchi`);
         }
         catch (error) {
             throw error;
@@ -33,7 +33,7 @@ export function useTamagotchiDatabase() {
         }
     }
 
-    async function updateTamagotchi({fome, sono, diversao, id}: {fome: number, sono: number, diversao: number, id: number}) {
+    async function updateTamagotchiAutoDecrease({fome, sono, diversao, id}: {fome: number, sono: number, diversao: number, id: number}) {
         const query = await database.prepareAsync(`UPDATE tamagotchi SET fome = $fome, sono = $sono, diversao = $diversao WHERE id = $id`);
         try{
             await query.executeAsync(fome, sono, diversao, id);
@@ -45,6 +45,47 @@ export function useTamagotchiDatabase() {
             query.finalizeAsync();
         }
     }
+
+    async function updateTamagotchiPlay(id: number) {
+        const query = await database.prepareAsync(`UPDATE tamagotchi SET diversao = diversao + 10 last_interaction = CURRENT_TIMESTAMP WHERE id = $id`);
+        try{
+            await query.executeAsync(id);
+        }
+        catch (error) {
+            throw error;
+        }
+        finally {
+            query.finalizeAsync();
+        }
+    }
+
+
+    async function updateTamagotchiFeed(id: number) {
+        const query = await database.prepareAsync(`UPDATE tamagotchi SET fome = fome + 10 last_interaction = CURRENT_TIMESTAMP WHERE id = $id`);
+        try{
+            await query.executeAsync(id);
+        }
+        catch (error) {
+            throw error;
+        }
+        finally {
+            query.finalizeAsync();
+        }
+    }
+
+    async function updateTamagotchiSleep(id: number) {
+        const query = await database.prepareAsync(`UPDATE tamagotchi SET sono = sono + 10 last_interaction = CURRENT_TIMESTAMP WHERE id = $id`);
+        try{
+            await query.executeAsync(id);
+        }
+        catch (error) {
+            throw error;
+        }
+        finally {
+            query.finalizeAsync();
+        }
+    }
+    
 
     async function deleteTamagotchi(id: number) {
         try{
@@ -59,7 +100,10 @@ export function useTamagotchiDatabase() {
         createTamagotchi,
         getTamagotchis,
         getTamagotchi,
-        updateTamagotchi,
+        updateTamagotchiAutoDecrease,
+        updateTamagotchiPlay,
+        updateTamagotchiFeed,
+        updateTamagotchiSleep,
         deleteTamagotchi,
     };
 }
