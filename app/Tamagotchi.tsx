@@ -1,8 +1,8 @@
 import { Status } from "@/components/ListedTamagotchi";
 import { Stack, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View, Button } from "react-native";
 import imageMap from "@/constants/ImageMap";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useTamagotchiDatabase } from "./database/tamagotchiService";
 import { statusMap } from "@/constants/Status";
 
@@ -18,7 +18,7 @@ type TamagotchiDetailProps = {
 const TamagotchiDetail = ({ id }: TamagotchiDetailProps) => {
   const params = useLocalSearchParams();
 
-  const { getTamagotchi } = useTamagotchiDatabase();
+  const { getTamagotchi, updateTamagotchiStatus } = useTamagotchiDatabase();
   const [name, setName] = useState<string>("");
   const [fome, setFome] = useState<number>(0);
   const [sono, setSono] = useState<number>(0);
@@ -37,6 +37,18 @@ const TamagotchiDetail = ({ id }: TamagotchiDetailProps) => {
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const maxStats = () => {
+    setFome(100);
+    setSono(100);
+    setDiversao(100);
+
+    updateTamagotchiStatus(Number(params.id), {
+      fome: 100,
+      sono: 100,
+      diversao: 100,
+    });
   };
 
   let status = statusMap(fome, sono, diversao);
@@ -58,6 +70,7 @@ const TamagotchiDetail = ({ id }: TamagotchiDetailProps) => {
         <Status title="Diversão" value={diversao} color="#FEACAC" />
       </View>
       <Status title="Status" value={status} width={200} />
+      <Button title="Atualizar Todos os Status" onPress={maxStats} />
     </View>
   );
 };

@@ -5,7 +5,8 @@ import { ScrollView, VirtualizedList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTamagotchiDatabase } from "./database/tamagotchiService";
 import { SetStateAction, useCallback, useEffect, useState } from "react";
-type Tamagotchi = {
+
+export type Tamagotchi = {
   id: number;
   name: string;
   fome: number;
@@ -39,7 +40,6 @@ const TamagotchiList = () => {
   useFocusEffect(
     useCallback(() => {
       tamagotchisList();
-
       return async () => {};
     }, [])
   );
