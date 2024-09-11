@@ -17,7 +17,6 @@ import imageMap from "@/constants/ImageMap";
 import { useCallback, useState } from "react";
 import { useTamagotchiDatabase } from "./database/tamagotchiService";
 import { statusMap } from "@/constants/Status";
-import { router } from "expo-router";
 
 type TamagotchiDetailProps = {
   id: number;
@@ -135,7 +134,7 @@ const TamagotchiDetail = ({ id }: TamagotchiDetailProps) => {
         <Status title="Sono" value={sono} color="#9DE8FF" />
         <Status title="Diversão" value={diversao} color="#FEACAC" />
       </View>
-      <Status title="Status" value={status} width={200} />itle="Atualizar Todos os Status" onPress={maxStats} />
+      <Status title="Status" value={status} width={200} />
 
       <View style={styles.statusContainer}>
         <Button title="Alimentar" onPress={alimentar} disabled={dead} />
