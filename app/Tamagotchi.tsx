@@ -5,6 +5,7 @@ import imageMap from "@/constants/ImageMap";
 import { useCallback, useState } from "react";
 import { useTamagotchiDatabase } from "./database/tamagotchiService";
 import { statusMap } from "@/constants/Status";
+import { router } from "expo-router";
 
 type TamagotchiDetailProps = {
   id: number;
@@ -59,6 +60,7 @@ const TamagotchiDetail = ({ id }: TamagotchiDetailProps) => {
       return () => {};
     }, [])
   );
+
   return (
     <View style={styles.container}>
       <Stack.Screen options={{ title: params.name as string }} />
@@ -71,9 +73,14 @@ const TamagotchiDetail = ({ id }: TamagotchiDetailProps) => {
       </View>
       <Status title="Status" value={status} width={200} />
       <Button title="Atualizar Todos os Status" onPress={maxStats} />
+      <Button
+        title="Jogar Minigame"
+        onPress={() => router.push("../MemoryGame")}
+      />
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     marginHorizontal: 10,
