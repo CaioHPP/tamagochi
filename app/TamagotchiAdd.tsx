@@ -5,6 +5,7 @@ import {
   Text,
   TextInput,
   View,
+  Alert,
 } from "react-native";
 import TamagotchiList from ".";
 import { router } from "expo-router";
@@ -29,6 +30,10 @@ const TamagotchiAdd = () => {
   };
 
   const salvar = () => {
+    if (name === "") {
+      Alert.alert("Dê um nome ao seu bichinho! 🫤");
+      return;
+    }
     create();
     router.back();
   };

@@ -44,7 +44,7 @@ const TamagotchiDetail = ({ id }: TamagotchiDetailProps) => {
   const [sono, setSono] = useState<number>(0);
   const [diversao, setDiversao] = useState<number>(0);
   const [image, setImage] = useState<number>(0);
-  const [dead, setDead] = useState<boolean>(false);
+  const [dead, setdead] = useState<boolean>(false);
 
   const tamagotchiList = async () => {
     try {
@@ -56,26 +56,10 @@ const TamagotchiDetail = ({ id }: TamagotchiDetailProps) => {
       setDiversao(tamagotchi[0].diversao < 0 ? 0 : tamagotchi[0].diversao);
       setImage(tamagotchi[0].image);
       tamagotchi[0].fome + tamagotchi[0].sono + tamagotchi[0].diversao <= 0
-        ? setDead(true)
-        : setDead(false);
+        ? setdead(true)
+        : setdead(false);
     } catch (error) {
       console.error(error);
-    }
-  };
-
-  const maxStats = () => {
-    try {
-      setFome(100);
-      setSono(100);
-      setDiversao(100);
-      updateTamagotchiAutoDecrease({
-        id: Number(params.id),
-        fome,
-        sono,
-        diversao,
-      });
-    } catch (error) {
-      console.log(error);
     }
   };
 
@@ -98,12 +82,10 @@ const TamagotchiDetail = ({ id }: TamagotchiDetailProps) => {
   };
 
   const brincar = () => {
-    diversao + 10 >= 100 ? setDiversao(100) : setDiversao(diversao + 10);
-    try {
-      updateTamagotchiPlay(Number(params.id), diversao);
-    } catch (error) {
-      console.log(error);
-    }
+    router.push({
+      pathname: "/GamePick",
+      params: { id: Number(params.id) },
+    });
   };
 
   const removeTamagotchi = () => {
@@ -134,14 +116,32 @@ const TamagotchiDetail = ({ id }: TamagotchiDetailProps) => {
         <Status title="Sono" value={sono} color="#9DE8FF" />
         <Status title="Diversão" value={diversao} color="#FEACAC" />
       </View>
-      <Status title="Status" value={status} width={200} />
-
-      <View style={styles.statusContainer}>
-        <Button title="Alimentar" onPress={alimentar} disabled={dead} />
-        <Button title="Descansar" onPress={descansar} disabled={dead} />
-        <Button title="Brincar" onPress={brincar} disabled={dead} />
+      <View style={styles.status}>
+        <Text style={styles.titleStatus}>Status</Text>
+        <Text style={styles.value}>{status}</Text>
       </View>
-      <Button title="Max All" onPress={maxStats} color="red" disabled={dead} />
+
+      <View style={styles.buttonContainer}>
+        <Button
+          title="Alimentar"
+          onPress={alimentar}
+          disabled={fome >= 100 || dead}
+          color={fome < 100 ? "#b0c002" : "gray"}
+        />
+        <Button
+          title="Descansar"
+          onPress={descansar}
+          disabled={sono >= 100 || dead}
+          color={sono < 100 ? "#2ca1c5" : "gray"}
+        />
+        <Button
+          title="Brincar"
+          onPress={brincar}
+          disabled={diversao >= 100 || dead}
+          color={diversao < 100 ? "#e27c7c" : "gray"}
+        />
+      </View>
+
       {dead ? (
         <Button
           title="Enterrar Tamagotchi"
@@ -150,10 +150,6 @@ const TamagotchiDetail = ({ id }: TamagotchiDetailProps) => {
           disabled={!dead}
         />
       ) : null}
-      <Button
-        title="Jogar Minigame"
-        onPress={() => router.push("../MemoryGame")}
-      />
     </View>
   );
 };
@@ -182,6 +178,31 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     gap: 20,
+  },
+  status: {
+    backgroundColor: "#fcd556",
+    padding: 5,
+    borderRadius: 5,
+    elevation: 3,
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: 200,
+    height: 50,
+  },
+  titleStatus: {
+    fontSize: 15,
+    fontWeight: "bold",
+  },
+  value: {
+    fontWeight: "bold",
+    fontSize: 20,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 20,
+    marginTop: 40,
   },
 });
 

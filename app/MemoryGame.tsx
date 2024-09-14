@@ -8,7 +8,8 @@ import {
   Button,
   Alert,
 } from "react-native";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
+import { useTamagotchiDatabase } from "./database/tamagotchiService";
 
 type MemoryImage = {
   id: number;
@@ -34,6 +35,9 @@ const MemoryGame = () => {
   const [images, setImages] = useState<MemoryImage[]>([]);
   const [selectedImages, setSelectedImages] = useState<number[]>([]);
   const [revealedImages, setRevealedImages] = useState<number[]>([]);
+
+  const { updateTamagotchiPlay, getTamagotchi } = useTamagotchiDatabase();
+  const params = useLocalSearchParams();
 
   const startGame = () => {
     const shuffledImages = shuffleArray([...initialImages]);
@@ -62,17 +66,40 @@ const MemoryGame = () => {
     }
   };
 
+  const updateTamagotchiDiversao = async () => {
+    try {
+      const tamagotchi: any = await getTamagotchi(Number(params.id));
+
+      if (tamagotchi && tamagotchi[0].diversao < 100) {
+        await updateTamagotchiPlay(
+          Number(params.id),
+          tamagotchi[0].diversao + 10 > 100 ? 100 : tamagotchi[0].diversao + 10
+        );
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     if (revealedImages.length === images.length && images.length > 0) {
-      Alert.alert("Parabéns!", "Você encontrou todos os pares");
-      startGame();
+      Alert.alert("Parabéns!", "Você encontrou todos os pares! 😊", [
+        {
+          text: "Ok",
+          onPress: () =>
+            router.navigate({
+              pathname: "/Tamagotchi",
+              params: { id: Number(params.id) },
+            }),
+        },
+      ]);
+
+      updateTamagotchiDiversao();
     }
   }, [revealedImages]);
 
   return (
     <View style={styles.container}>
-      <Button title="Voltar" onPress={() => router.back()} />
-
       <Text style={styles.title}>Jogo da Memória</Text>
       <View style={styles.board}>
         {images.map((image, index) => (

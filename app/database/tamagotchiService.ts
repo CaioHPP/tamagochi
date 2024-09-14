@@ -27,11 +27,11 @@ export function useTamagotchiDatabase() {
       const diff = now.getTime() - lastInteraction.getTime();
       const seconds = Math.abs(diff / 1000);
 
-      if (seconds < 100) return;
+      if (seconds < 90) return;
 
-      const fomeIdle = Math.floor(seconds / 200);
+      const fomeIdle = Math.floor(seconds / 130);
       const sonoIdle = Math.floor(seconds / 100);
-      const diversaoIdle = Math.floor(seconds / 120);
+      const diversaoIdle = Math.floor(seconds / 90);
 
       tamagotchi.fome -= fomeIdle;
       tamagotchi.sono -= sonoIdle;

@@ -9,16 +9,13 @@ De 201 - 250: status “bem”
 de 252 - 300: status “muito bem”
 
 */
-export function statusMap (fome: number, sono: number, diversao: number) {
-    const status = fome + sono + diversao;
-    if (status === 0) return "Morto";
-    if (status < 51) return "Crítico";
-    if (status < 101) return "Muito\nTriste";
-    if (status < 151) return "Triste";
-    if (status < 201) return "Ok";
-    if (status < 251) return "Bem";
-    return "Muito\nBem";
-    }
-
-
-    
+export function statusMap(fome: number, sono: number, diversao: number) {
+  const status = fome + sono + diversao;
+  if (status === 0) return "Morto";
+  if (status < 51) return "Crítico";
+  if (status < 101) return "Muito\nTriste";
+  if (status < 151) return "Triste";
+  if (status < 201) return "Ok";
+  if (status < 251) return "Bem";
+  return "Muito Bem";
+}

@@ -38,6 +38,8 @@ export function Status({ title, value, color, width }: StatusProps) {
     },
     value: {
       fontWeight: "bold",
+      textAlign: "center",
+      fontSize: 13,
     },
   });
 
