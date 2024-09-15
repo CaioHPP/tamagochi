@@ -38,6 +38,11 @@ export default function RootLayout() {
           options={{ title: "Adicionar Tamagotchi" }}
         />
         <Stack.Screen name="GamePick" options={{ title: "Escolha um Game" }} />
+        <Stack.Screen
+          name="MemoryGame"
+          options={{ title: "Jogo da Memória" }}
+        />
+        <Stack.Screen name="CameraGame" options={{ title: "Camera" }} />
       </Stack>
     </SQLiteProvider>
   );

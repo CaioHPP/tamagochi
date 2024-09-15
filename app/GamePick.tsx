@@ -21,6 +21,21 @@ const GamePick = () => {
           }}
         />
       </View>
+      <View style={styles.gameContainer}>
+        <Image
+          source={require("../assets/images/MemoryGame.gif")}
+          style={styles.image}
+        />
+        <Button
+          title="Esconde-Esconde"
+          onPress={() => {
+            router.push({
+              pathname: "/CameraGame",
+              params: { id: Number(params.id) },
+            });
+          }}
+        />
+      </View>
     </View>
   );
 };
