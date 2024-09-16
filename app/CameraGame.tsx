@@ -16,7 +16,7 @@ import {
 import { useState, useEffect, useCallback } from "react";
 import imageMap from "@/constants/ImageMap";
 import { Magnetometer, Accelerometer } from "expo-sensors";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useTamagotchiDatabase } from "./database/tamagotchiService";
 
 type Data = {
@@ -93,15 +93,6 @@ const isMagClose = (result: Data, tamagotchiPosition: Data, range: number) => {
 };
 
 const isAccClose = (result: Data, tamagotchiPosition: Data, range: number) => {
-  const checkX = () => {
-    if (
-      result.x * 10 > tamagotchiPosition.x - range &&
-      result.x * 10 < tamagotchiPosition.x + range
-    ) {
-      return true;
-    }
-    return false;
-  };
   const checkY = () => {
     if (
       result.y * 10 > tamagotchiPosition.y - range &&
@@ -120,7 +111,7 @@ const isAccClose = (result: Data, tamagotchiPosition: Data, range: number) => {
     return false;
   };
 
-  return checkX() && checkY() && checkZ();
+  return checkY() && checkZ();
 };
 
 const CameraGame = () => {
@@ -134,7 +125,9 @@ const CameraGame = () => {
   const [showTamagotchi, setShowTamagotchi] = useState(false);
   const [isTamaClose, setIsTamaClose] = useState(false);
   const [tamagotchiImage, setTamagotchiImage] = useState<number>(0);
-  const [tamagotchiDiversao, setTamagotchiDiversao] = useState<number>(0);
+  const [diversao, setDiversao] = useState<number>(0);
+  const [playerWon, setPlayerWon] = useState(false);
+  const [name, setName] = useState<string>("");
   const [tamagotchiMagPosition, setTamagotchiMagPosition] = useState({
     x: 0,
     y: 0,
@@ -153,7 +146,7 @@ const CameraGame = () => {
     ) {
       setShowTamagotchi(true);
     } else if (
-      isMagClose(mag, tamagotchiMagPosition, 40) &&
+      isMagClose(mag, tamagotchiMagPosition, 30) &&
       isAccClose(accel, tamagotchiAccPosition, 5)
     ) {
       setIsTamaClose(true);
@@ -167,16 +160,25 @@ const CameraGame = () => {
     try {
       const tamagotchi: any = await getTamagotchi(Number(params.id));
       setTamagotchiImage(tamagotchi[0].image);
-      setTamagotchiDiversao(tamagotchi[0].diversao);
+      setDiversao(tamagotchi[0].diversao);
+      setName(tamagotchi[0].name);
     } catch (error) {
       console.error(error);
     }
   };
 
   const setTamagotchiPosition = () => {
-    const randomPosition = Math.floor(Math.random() * 8) + 1;
+    const randomPosition = Math.floor(Math.random() * 1) + 1;
     setTamagotchiMagPosition(tamagotchiMagPositionMap[randomPosition]);
     setTamagotchiAccPosition(tamagotchiAccPositionMap[randomPosition]);
+  };
+
+  const venceu = () => {
+    if (diversao + 20 >= 100) {
+      setDiversao(100);
+    } else {
+      setDiversao(diversao + 20);
+    }
   };
 
   useEffect(() => {
@@ -206,26 +208,28 @@ const CameraGame = () => {
     setFacing((current) => (current === "back" ? "front" : "back"));
   }
 
-  const venceu = async () => {
-    tamagotchiDiversao + 20 >= 100
-      ? setTamagotchiDiversao(100)
-      : setTamagotchiDiversao(tamagotchiDiversao + 20);
-    try {
-      await updateTamagotchiPlay(Number(params.id), tamagotchiDiversao);
-      Alert.alert("Parabéns! 🥳", "Você encontrou seu bichinho", [
-        {
-          text: "Ok",
-          onPress: () =>
-            router.navigate({
-              pathname: "/Tamagotchi",
-              params: { id: Number(params.id) },
-            }),
-        },
-      ]);
-    } catch (error) {
-      console.error(error);
+  useEffect(() => {
+    if (playerWon) {
+      (async () => {
+        try {
+          await updateTamagotchiPlay(Number(params.id), diversao);
+          Alert.alert("Parabéns! 🥳", "Você encontrou seu bichinho", [
+            {
+              text: "Ok",
+              onPress: async () => {
+                router.navigate({
+                  pathname: "/Tamagotchi",
+                  params: { id: Number(params.id) },
+                });
+              },
+            },
+          ]);
+        } catch (error) {
+          console.error(error);
+        }
+      })();
     }
-  };
+  }, [diversao]);
 
   const styles = StyleSheet.create({
     container: {
@@ -327,34 +331,21 @@ const CameraGame = () => {
 
   return (
     <View style={styles.container}>
-      <CameraView style={styles.camera} facing={facing}>
-        <Text style={styles.text}>Mag X: {magData.x}</Text>
-        <Text style={styles.text}>Mag Y: {magData.y}</Text>
-        <Text style={styles.text}>Mag Z: {magData.z}</Text>
-
-        <Text style={styles.text}>Acc X: {accData.x * 10}</Text>
-        <Text style={styles.text}>Acc Y: {accData.y * 10}</Text>
-        <Text style={styles.text}>Acc Z: {accData.z * 10}</Text>
-
-        <Text style={styles.text}>T Mag X : {tamagotchiMagPosition.x}</Text>
-        <Text style={styles.text}>T Mag Y : {tamagotchiMagPosition.y}</Text>
-        <Text style={styles.text}>T Mag Z : {tamagotchiMagPosition.z}</Text>
-
-        <Text style={styles.text}>T Acc X: {tamagotchiAccPosition.x}</Text>
-        <Text style={styles.text}>T Acc Y: {tamagotchiAccPosition.y}</Text>
-        <Text style={styles.text}>T Acc Z: {tamagotchiAccPosition.z}</Text>
-      </CameraView>
+      <CameraView style={styles.camera} facing={facing} />
       <Modal
         visible={isTamaClose}
-        style={{
-          ...styles.modalContent,
-        }}
+        style={styles.modalContent}
         transparent={true}
       >
-        <View style={{ ...styles.modalBorder }}>
-          <View style={{ ...styles.modalView }}>
+        <View style={styles.modalBorder}>
+          <View style={styles.modalView}>
             {showTamagotchi && (
-              <TouchableOpacity onPress={venceu}>
+              <TouchableOpacity
+                onPress={() => {
+                  setPlayerWon(true);
+                  venceu();
+                }}
+              >
                 <Image
                   style={styles.modalImage}
                   source={imageMap[tamagotchiImage]}

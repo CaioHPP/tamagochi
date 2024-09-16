@@ -18,8 +18,8 @@ const tamagotchiAccPositionMap: { [key: number]: any } = {
   4: { x: 0, y: 9.29, z: -3.16 }, //
   5: { x: 0, y: 9.71, z: 1.4 },
   6: { x: 0, y: 9.18, z: -3.45 },
-  7: { x: 0, y: 1.7, z: 9.66 },
-  8: { x: 0, y: 1.7, z: -9.66 },
+  7: { x: -0, y: 1.7, z: 9.66 },
+  8: { x: -0, y: 1.7, z: -9.66 },
 };
 
 export { tamagotchiMagPositionMap, tamagotchiAccPositionMap };

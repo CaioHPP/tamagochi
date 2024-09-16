@@ -23,7 +23,7 @@ const GamePick = () => {
       </View>
       <View style={styles.gameContainer}>
         <Image
-          source={require("../assets/images/MemoryGame.gif")}
+          source={require("../assets/images/HidenSeekGame.gif")}
           style={styles.image}
         />
         <Button
@@ -45,6 +45,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    gap: 30,
   },
   gameContainer: {
     width: "100%",
